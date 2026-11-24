@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+.next/
+out/
+build/
+*.tsbuildinfo
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Logs & runtime
+logs/
+*.log
+npm-debug.log*
+.DS_Store
+storage/documents/
+tmp/
+
+# Test artifacts
+coverage/
+playwright-report/
+test-results/

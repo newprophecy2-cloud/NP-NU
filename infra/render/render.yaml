@@ -1,0 +1,81 @@
+services:
+  - type: web
+    name: np-nu-api
+    runtime: docker
+    dockerfilePath: ./infra/docker/Dockerfile.api
+    dockerContext: .
+    branch: main
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_ENV
+        value: production
+      - key: PORT
+        value: "4000"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: np-nu-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: np-nu-redis
+          type: redis
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: AUTH_SECRET
+        generateValue: true
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: APP_URL
+        sync: false
+      - key: API_URL
+        sync: false
+
+  - type: web
+    name: np-nu-web
+    runtime: docker
+    dockerfilePath: ./infra/docker/Dockerfile.web
+    dockerContext: .
+    branch: main
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+      - key: API_INTERNAL_URL
+        sync: false
+
+  - type: worker
+    name: np-nu-worker
+    runtime: docker
+    dockerfilePath: ./infra/docker/Dockerfile.worker
+    dockerContext: .
+    branch: main
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: np-nu-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: np-nu-redis
+          type: redis
+          property: connectionString
+
+  - type: redis
+    name: np-nu-redis
+    plan: free
+    ipAllowList: []
+
+databases:
+  - name: np-nu-db
+    plan: free
+    databaseName: npnu
+    user: npnu

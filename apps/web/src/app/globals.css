@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --target-size: 24px;
+}
+
+@media (pointer: coarse) {
+  :root {
+    --target-size: 44px;
+  }
+}
+
+html {
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background-color: #f8fafc;
+  color: #0f172a;
+  overflow-wrap: break-word;
+}
+
+:where(a, code) {
+  overflow-wrap: anywhere;
+}
+
+:where(a:any-link, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid #0f766e;
+  outline-offset: 2px;
+}
+
+:where(button, select, textarea, input:not([type='checkbox'], [type='radio']), [role='button'], nav a) {
+  min-block-size: var(--target-size);
+}
+
+input, select, textarea {
+  font-size: max(1rem, 1em);
+}
+
+h1, h2, h3 {
+  text-wrap: balance;
+}
+
+.visually-hidden:where(:not(:focus-within, :active)) {
+  position: absolute !important;
+  clip-path: inset(50%) !important;
+  overflow: hidden !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* Container-query responsive data table */
+.table-wrapper {
+  overflow: auto;
+  max-inline-size: 100%;
+  container-type: inline-size;
+}
+
+@container (width < 600px) {
+  .responsive-table,
+  .responsive-table thead,
+  .responsive-table tbody,
+  .responsive-table tr,
+  .responsive-table th,
+  .responsive-table td {
+    display: block;
+  }
+  .responsive-table thead {
+    display: none;
+  }
+  .responsive-table tbody tr {
+    margin-block-end: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    padding: 0.75rem;
+  }
+  .responsive-table td {
+    padding: 0.35rem 0;
+    border: none;
+  }
+  .responsive-table td[data-label]::before {
+    content: attr(data-label) ': ';
+    font-weight: 600;
+    color: #475569;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
