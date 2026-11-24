@@ -2,6 +2,7 @@ services:
   - type: web
     name: np-nu-api
     runtime: docker
+    plan: free
     dockerfilePath: ./infra/docker/Dockerfile.api
     dockerContext: .
     branch: main
@@ -21,7 +22,7 @@ services:
       - key: REDIS_URL
         fromService:
           name: np-nu-redis
-          type: redis
+          type: keyvalue
           property: connectionString
       - key: SESSION_SECRET
         generateValue: true
@@ -30,13 +31,14 @@ services:
       - key: COOKIE_SECURE
         value: "true"
       - key: APP_URL
-        sync: false
+        value: https://np-nu-web.onrender.com
       - key: API_URL
-        sync: false
+        value: https://np-nu-api.onrender.com
 
   - type: web
     name: np-nu-web
     runtime: docker
+    plan: free
     dockerfilePath: ./infra/docker/Dockerfile.web
     dockerContext: .
     branch: main
@@ -44,14 +46,18 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: API_HOSTPORT
+        fromService:
+          name: np-nu-api
+          type: web
+          property: hostport
       - key: NEXT_PUBLIC_API_URL
-        sync: false
-      - key: API_INTERNAL_URL
-        sync: false
+        value: /api/v1
 
   - type: worker
     name: np-nu-worker
     runtime: docker
+    plan: starter
     dockerfilePath: ./infra/docker/Dockerfile.worker
     dockerContext: .
     branch: main
@@ -66,12 +72,13 @@ services:
       - key: REDIS_URL
         fromService:
           name: np-nu-redis
-          type: redis
+          type: keyvalue
           property: connectionString
 
-  - type: redis
+  - type: keyvalue
     name: np-nu-redis
     plan: free
+    maxmemoryPolicy: noeviction
     ipAllowList: []
 
 databases:

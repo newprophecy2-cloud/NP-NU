@@ -11,8 +11,10 @@ let poolInstance: pg.Pool | null = null;
 export function getPool(): pg.Pool {
   if (!poolInstance) {
     const env = getEnv();
+    const needsSsl = env.DATABASE_URL.includes('.render.com') || env.DATABASE_URL.includes('sslmode=require');
     poolInstance = new Pool({
       connectionString: env.DATABASE_URL,
+      ssl: needsSsl ? { rejectUnauthorized: false } : undefined,
       max: 15,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 5000,

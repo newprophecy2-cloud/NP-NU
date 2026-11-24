@@ -18,7 +18,12 @@ const REDIS_URL = process.env.REDIS_URL ?? 'redis://localhost:6379';
 const USER_AGENT = process.env.SCRAPER_USER_AGENT ?? 'NP-NU-Bot/1.0 (+https://github.com/newprophecy2-cloud/NP-NU)';
 const REQUEST_TIMEOUT_MS = Number(process.env.SCRAPER_REQUEST_TIMEOUT_MS ?? 12000);
 
-const pool = new Pool({ connectionString: DATABASE_URL, max: 8 });
+const needsPgSsl = DATABASE_URL.includes('.render.com') || DATABASE_URL.includes('sslmode=require');
+const pool = new Pool({
+  connectionString: DATABASE_URL,
+  ssl: needsPgSsl ? { rejectUnauthorized: false } : undefined,
+  max: 8,
+});
 const robotsCache = new Map<string, RobotsRules>();
 
 function sleep(ms: number): Promise<void> {

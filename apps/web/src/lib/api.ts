@@ -1,7 +1,23 @@
-export const API_BASE_URL =
-  typeof window === 'undefined'
-    ? process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:4000/api/v1'
-    : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1';
+function resolveApiBaseUrl(): string {
+  if (typeof window !== 'undefined') {
+    return process.env.NEXT_PUBLIC_API_URL || '/api/v1';
+  }
+  if (process.env.API_INTERNAL_URL) {
+    return process.env.API_INTERNAL_URL.replace(/\/+$/, '');
+  }
+  if (process.env.API_HOSTPORT) {
+    const hp = process.env.API_HOSTPORT.startsWith('http')
+      ? process.env.API_HOSTPORT
+      : `http://${process.env.API_HOSTPORT}`;
+    return `${hp.replace(/\/+$/, '')}/api/v1`;
+  }
+  if (process.env.NEXT_PUBLIC_API_URL && process.env.NEXT_PUBLIC_API_URL.startsWith('http')) {
+    return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, '');
+  }
+  return 'http://127.0.0.1:4000/api/v1';
+}
+
+export const API_BASE_URL = resolveApiBaseUrl();
 
 export class ApiError extends Error {
   status: number;
