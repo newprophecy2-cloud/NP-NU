@@ -7,5 +7,6 @@
 - [x] Official portal handoff disclaimer & no credential storage
 - [x] Unit, scraper-fixture, and API integration tests
 - [x] Docker Compose staging verification (`docker-compose.yml`)
-- [ ] GitHub repository (`NP-NU`) & CI verification
-- [ ] Render production deployment & live verification
+- [x] GitHub repository (`NP-NU`) & CI verification
+- [x] Render production deployment (`np-nu-api`, `np-nu-web`, `np-nu-db`, `np-nu-redis`) & live HTTPS verification
+- [ ] Render `np-nu-worker` (requires paid `starter` plan billing on Render workspace)
